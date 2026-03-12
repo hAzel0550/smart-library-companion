@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: frontend  # <-- Your Flutter/frontend project folder
+        working-directory: frontend  # <-- Your Flutter project folder
 
     steps:
       # 1️⃣ Checkout repo
@@ -33,11 +33,11 @@ jobs:
           path: ~/.sonar/cache
           key: ${{ runner.os }}-sonar
 
-      # 4️⃣ Install Flutter
+      # 4️⃣ Install Flutter (updated for Dart 3.10.7+)
       - name: Install Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.13.6'
+          flutter-version: '3.41.4'  # <-- Fixes Dart SDK version issue
 
       # 5️⃣ Install dependencies
       - name: Install dependencies
