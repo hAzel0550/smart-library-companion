@@ -26,6 +26,9 @@ jobs:
         with:
           projectBaseDir: .
           args: >
-            -Dsonar.projectKey=hAzel0550_smart-library-companion
-            -Dsonar.organization=hazel0550
-            -Dsonar.sources=backend,frontend
+                -Dsonar.projectKey=hAzel0550_smart-library-companion
+                -Dsonar.organization=hazel0550
+                -Dsonar.sources=backend,frontend
+                -Dsonar.c.file.suffixes=-
+                -Dsonar.cpp.file.suffixes=-
+                -Dsonar.objc.file.suffixes=-
