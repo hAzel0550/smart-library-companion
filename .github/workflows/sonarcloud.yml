@@ -1,17 +1,20 @@
-name: SonarCloud analysis
+name: SonarCloud Analysis
 
 on:
 push:
-branches: ["main"]
+branches:
+- main
 pull_request:
-branches: ["main"]
+branches:
+- main
 workflow_dispatch:
 
 permissions:
 pull-requests: read
 
 jobs:
-Analysis:
+sonarcloud:
+name: SonarCloud Scan
 runs-on: ubuntu-latest
 
 ```
@@ -20,8 +23,8 @@ steps:
   - name: Checkout code
     uses: actions/checkout@v4
 
-  # Step 2: Run SonarCloud Scan
-  - name: SonarCloud Scan
+  # Step 2: SonarCloud Scan
+  - name: Run SonarCloud Analysis
     uses: SonarSource/sonarcloud-github-action@v2
     env:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -31,7 +34,7 @@ steps:
         -Dsonar.projectKey=hAzel0550_smart-library-companion
         -Dsonar.organization=hazel0550
         -Dsonar.sources=backend,frontend
-        -Dsonar.exclusions=**/node_modules/**,**/build/**,**/.dart_tool/**,**/ios/**,**/android/**
+        -Dsonar.exclusions=**/node_modules/**,**/build/**,**/.dart_tool/**,**/android/**,**/ios/**
         -Dsonar.c.file.suffixes=-
         -Dsonar.cpp.file.suffixes=-
         -Dsonar.objc.file.suffixes=-
