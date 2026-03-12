@@ -1,31 +1,58 @@
-name: SonarCloud analysis
+# sonarcloud.yml
+# SonarCloud configuration for Flutter/Dart project
+
+name: "SonarCloud Analysis"
 
 on:
   push:
-    branches: ["main"]
+    branches:
+      - main
   pull_request:
-    branches: ["main"]
-
-permissions:
-  pull-requests: read
+    branches:
+      - "*"
 
 jobs:
-  Analysis:
+  sonarcloud:
+    name: SonarCloud Scan
     runs-on: ubuntu-latest
-
     steps:
-      # STEP 1: download your repository
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
-      # STEP 2: run SonarCloud scan
-      - name: SonarCloud Scan
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 'stable'
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Run SonarCloud Scanner
         uses: SonarSource/sonarcloud-github-action@v2
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           projectBaseDir: .
-          args: >
-            -Dsonar.projectKey=hAzel0550_smart-library-companion
-            -Dsonar.organization=hazel0550
-            -Dsonar.sources=backend,frontend
+          extraProperties: |
+            # Project identification
+            sonar.projectKey=YOUR_PROJECT_KEY
+            sonar.organization=YOUR_ORG_KEY
+
+            # Language and source files
+            sonar.sources=lib
+            sonar.exclusions=**/build/**, **/*.g.dart
+
+            # Skip C-family files to avoid compilation database error
+            sonar.c.file.suffixes=-
+            sonar.cpp.file.suffixes=-
+            sonar.objc.file.suffixes=-
