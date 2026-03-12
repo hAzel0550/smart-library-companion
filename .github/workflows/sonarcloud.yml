@@ -10,55 +10,52 @@ jobs:
   sonarcloud:
     name: SonarCloud Scan
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend  # <-- Your Flutter/frontend project folder
+
     steps:
+      # 1️⃣ Checkout repo
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      # 2️⃣ Set up JDK 17 (required by SonarCloud)
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
           java-version: '17'
           distribution: 'temurin'
 
+      # 3️⃣ Cache SonarCloud packages
       - name: Cache SonarCloud packages
         uses: actions/cache@v3
         with:
           path: ~/.sonar/cache
           key: ${{ runner.os }}-sonar
 
+      # 4️⃣ Install Flutter
       - name: Install Flutter
         uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.13.6'
 
-      - name: Find Flutter Project
-        id: find_flutter
-        run: |
-          if [ -f "pubspec.yaml" ]; then
-            echo "PROJECT_DIR=." >> $GITHUB_ENV
-          elif [ -f "flutter_app/pubspec.yaml" ]; then
-            echo "PROJECT_DIR=flutter_app" >> $GITHUB_ENV
-          else
-            echo "Error: Cannot find pubspec.yaml!" >&2
-            exit 1
-          fi
-
+      # 5️⃣ Install dependencies
       - name: Install dependencies
         run: flutter pub get
-        working-directory: ${{ env.PROJECT_DIR }}
 
+      # 6️⃣ Optional: Analyze code
       - name: Flutter Analyze
         run: flutter analyze
-        working-directory: ${{ env.PROJECT_DIR }}
 
+      # 7️⃣ Optional: Build project
       - name: Flutter Build
         run: flutter build apk --debug
-        working-directory: ${{ env.PROJECT_DIR }}
 
+      # 8️⃣ Run SonarCloud analysis
       - name: Run SonarCloud Scanner
         uses: SonarSource/sonarcloud-github-action@v2
         with:
-          projectBaseDir: ${{ env.PROJECT_DIR }}
+          projectBaseDir: .
           extraProperties: |
             sonar.projectKey=YOUR_PROJECT_KEY
             sonar.organization=YOUR_ORG_KEY
