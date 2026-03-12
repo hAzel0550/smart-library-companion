@@ -7,35 +7,21 @@ branches:
 pull_request:
 branches:
 - main
-workflow_dispatch:
 
 permissions:
 pull-requests: read
 
 jobs:
 sonarcloud:
-name: SonarCloud Scan
 runs-on: ubuntu-latest
 
 ```
 steps:
-  # Step 1: Checkout repository
   - name: Checkout code
     uses: actions/checkout@v4
 
-  # Step 2: SonarCloud Scan
-  - name: Run SonarCloud Analysis
+  - name: SonarCloud Scan
     uses: SonarSource/sonarcloud-github-action@v2
     env:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-    with:
-      projectBaseDir: .
-      args: >
-        -Dsonar.projectKey=hAzel0550_smart-library-companion
-        -Dsonar.organization=hazel0550
-        -Dsonar.sources=backend,frontend
-        -Dsonar.exclusions=**/node_modules/**,**/build/**,**/.dart_tool/**,**/android/**,**/ios/**
-        -Dsonar.c.file.suffixes=-
-        -Dsonar.cpp.file.suffixes=-
-        -Dsonar.objc.file.suffixes=-
 ```
