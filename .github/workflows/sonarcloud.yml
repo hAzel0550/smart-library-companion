@@ -2,10 +2,9 @@ name: SonarCloud analysis
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
-  workflow_dispatch:
+    branches: ["main"]
 
 permissions:
   pull-requests: read
@@ -15,9 +14,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      # STEP 1: download your repository
+      - name: Checkout repository
         uses: actions/checkout@v4
 
+      # STEP 2: run SonarCloud scan
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
         env:
