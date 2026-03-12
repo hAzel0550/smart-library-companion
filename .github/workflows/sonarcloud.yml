@@ -1,34 +1,38 @@
 name: SonarCloud analysis
 
 on:
-  push:
-    branches: ["main"]
-  pull_request:
-    branches: ["main"]
+push:
+branches: ["main"]
+pull_request:
+branches: ["main"]
+workflow_dispatch:
 
 permissions:
-  pull-requests: read
+pull-requests: read
 
 jobs:
-  Analysis:
-    runs-on: ubuntu-latest
+Analysis:
+runs-on: ubuntu-latest
 
-    steps:
-      # STEP 1: download your repository
-      - name: Checkout repository
-        uses: actions/checkout@v4
+```
+steps:
+  # Step 1: Checkout repository
+  - name: Checkout code
+    uses: actions/checkout@v4
 
-      # STEP 2: run SonarCloud scan
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@v2
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        with:
-          projectBaseDir: .
-          args: >
-                -Dsonar.projectKey=hAzel0550_smart-library-companion
-                -Dsonar.organization=hazel0550
-                -Dsonar.sources=backend,frontend
-                -Dsonar.c.file.suffixes=-
-                -Dsonar.cpp.file.suffixes=-
-                -Dsonar.objc.file.suffixes=-
+  # Step 2: Run SonarCloud Scan
+  - name: SonarCloud Scan
+    uses: SonarSource/sonarcloud-github-action@v2
+    env:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    with:
+      projectBaseDir: .
+      args: >
+        -Dsonar.projectKey=hAzel0550_smart-library-companion
+        -Dsonar.organization=hazel0550
+        -Dsonar.sources=backend,frontend
+        -Dsonar.exclusions=**/node_modules/**,**/build/**,**/.dart_tool/**,**/ios/**,**/android/**
+        -Dsonar.c.file.suffixes=-
+        -Dsonar.cpp.file.suffixes=-
+        -Dsonar.objc.file.suffixes=-
+```
