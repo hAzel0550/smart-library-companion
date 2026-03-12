@@ -2,17 +2,14 @@ name: "SonarCloud Analysis for Flutter"
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   pull_request:
-    branches:
-      - "*"
+    branches: ["*"]
 
 jobs:
   sonarcloud:
     name: SonarCloud Scan
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -34,19 +31,34 @@ jobs:
         with:
           flutter-version: '3.13.6'
 
+      - name: Find Flutter Project
+        id: find_flutter
+        run: |
+          if [ -f "pubspec.yaml" ]; then
+            echo "PROJECT_DIR=." >> $GITHUB_ENV
+          elif [ -f "flutter_app/pubspec.yaml" ]; then
+            echo "PROJECT_DIR=flutter_app" >> $GITHUB_ENV
+          else
+            echo "Error: Cannot find pubspec.yaml!" >&2
+            exit 1
+          fi
+
       - name: Install dependencies
         run: flutter pub get
+        working-directory: ${{ env.PROJECT_DIR }}
 
       - name: Flutter Analyze
         run: flutter analyze
+        working-directory: ${{ env.PROJECT_DIR }}
 
       - name: Flutter Build
         run: flutter build apk --debug
+        working-directory: ${{ env.PROJECT_DIR }}
 
       - name: Run SonarCloud Scanner
         uses: SonarSource/sonarcloud-github-action@v2
         with:
-          projectBaseDir: .
+          projectBaseDir: ${{ env.PROJECT_DIR }}
           extraProperties: |
             sonar.projectKey=YOUR_PROJECT_KEY
             sonar.organization=YOUR_ORG_KEY
