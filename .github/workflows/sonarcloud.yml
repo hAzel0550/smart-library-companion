@@ -1,27 +1,31 @@
-name: SonarCloud Analysis
+name: SonarCloud analysis
 
 on:
-push:
-branches:
-- main
-pull_request:
-branches:
-- main
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
 
 permissions:
-pull-requests: read
+  pull-requests: read
 
 jobs:
-sonarcloud:
-runs-on: ubuntu-latest
+  Analysis:
+    runs-on: ubuntu-latest
 
-```
-steps:
-  - name: Checkout code
-    uses: actions/checkout@v4
+    steps:
+      # STEP 1: download your repository
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-  - name: SonarCloud Scan
-    uses: SonarSource/sonarcloud-github-action@v2
-    env:
-      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-```
+      # STEP 2: run SonarCloud scan
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@v2
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          projectBaseDir: .
+          args: >
+            -Dsonar.projectKey=hAzel0550_smart-library-companion
+            -Dsonar.organization=hazel0550
+            -Dsonar.sources=backend,frontend
