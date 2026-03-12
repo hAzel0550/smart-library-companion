@@ -33,11 +33,11 @@ jobs:
           path: ~/.sonar/cache
           key: ${{ runner.os }}-sonar
 
-      # 4️⃣ Install Flutter (updated for Dart 3.10.7+)
+      # 4️⃣ Install Flutter
       - name: Install Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.41.4'  # <-- Fixes Dart SDK version issue
+          flutter-version: '3.41.4'
 
       # 5️⃣ Install dependencies
       - name: Install dependencies
@@ -54,13 +54,15 @@ jobs:
       # 8️⃣ Run SonarCloud analysis
       - name: Run SonarCloud Scanner
         uses: SonarSource/sonarcloud-github-action@v2
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}   # <-- Must be set in repo secrets
         with:
           projectBaseDir: .
-          extraProperties: |
-            sonar.projectKey=YOUR_PROJECT_KEY
-            sonar.organization=YOUR_ORG_KEY
-            sonar.sources=lib
-            sonar.exclusions=**/build/**, **/*.g.dart
-            sonar.c.file.suffixes=-
-            sonar.cpp.file.suffixes=-
-            sonar.objc.file.suffixes=-
+          args: >
+            -Dsonar.projectKey=YOUR_PROJECT_KEY
+            -Dsonar.organization=YOUR_ORG_KEY
+            -Dsonar.sources=lib
+            -Dsonar.exclusions=**/build/**, **/*.g.dart
+            -Dsonar.c.file.suffixes=-
+            -Dsonar.cpp.file.suffixes=-
+            -Dsonar.objc.file.suffixes=-
